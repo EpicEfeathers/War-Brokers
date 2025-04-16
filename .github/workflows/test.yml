@@ -15,8 +15,12 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
-      - uses: DeterminateSystems/nix-installer-action@main
-      - uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - uses: cachix/install-nix-action@v30
+      - uses: cachix/cachix-action@v15
+        with:
+          name: devenv
+      - uses: DeterminateSystems/flakehub-cache-action@main
 
       - name: Install devenv.sh
         run: nix profile install nixpkgs#devenv
@@ -32,5 +36,8 @@ jobs:
           WB_DB_BASE: http://localhost:4000
           DATABASE_URL: "postgresql://localhost:5432/postgres"
           EOF
+
+      - run: pnpm install
+        shell: devenv shell bash -- -e {0}
 
       - run: devenv test

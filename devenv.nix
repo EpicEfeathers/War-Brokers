@@ -6,7 +6,6 @@
     nixfmt-rfc-style
 
     # version of these packages must be synced with npm packages
-    commitlint
     playwright-driver.browsers
   ];
 
@@ -45,13 +44,6 @@
   # https://github.com/cachix/devenv/blob/main/src/modules/tasks.nix
   # https://devenv.sh/tasks
   tasks = {
-    "bash:husky" = {
-      exec = "pnpm run husky";
-      before = [
-        "devenv:enterShell"
-      ];
-    };
-
     "bash:reset-wbapi-db" = {
       exec = "rm -rf .devenv/state/postgres";
       before = [
@@ -62,6 +54,10 @@
   };
 
   # https://devenv.sh/processes
+  process = {
+    manager.implementation = "process-compose";
+    managers.process-compose.tui.enable = false;
+  };
   processes = {
     # todo: https://f1bonacc1.github.io/process-compose/health wbapi health check
     dev = {
